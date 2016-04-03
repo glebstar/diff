@@ -19,6 +19,14 @@ class Diff {
         $arr1 = preg_split('/--br--|--dot--/', $t1);        
         $arr2 = preg_split('/--br--|--dot--/', $t2); 
         
+        if(count($arr1) == 1 && !$arr1[0]) {
+            $arr1 = array();
+        }
+        
+        if(count($arr2) == 1 && !$arr2[0]) {
+            $arr2 = array();
+        }
+        
         // результирующий массив
         $arr3 = array();
         
@@ -32,6 +40,8 @@ class Diff {
                     'mark' => 'new',
                     'value' => $arr2[$i]
                 );
+                
+                continue;
             }
 
             if($arr2[$i] == $arr1[$currItemArr1]) {
@@ -86,6 +96,15 @@ class Diff {
             }
         }
         
+        // если первый массив длиннее чем второй
+        // все непроверенные строки из первого считать удаленными
+        for($i=count($arr2); $i<count($arr1); $i++) {
+            $arr3[] = array(
+                'mark' => 'del',
+                'value' => $arr1[$i]
+            );
+        }
+        
         return self::_getResult($arr3);
     }
     
@@ -114,10 +133,20 @@ class Diff {
         $arr1 = explode(' ', $t1);
         $arr2 = explode(' ', $t2);
         
+        // приведем первый массив к нижнему регистру, чтобы сравнивать без учета регистра
+        // с учетом приведенных примеров текстов на производительность это фактически не повлияет
+        for($i=0; $i<count($arr1); $i++) {
+            $arr1[$i] = mb_strtolower($arr1[$i], 'UTF-8');
+        }
+        
         $res = 0;
         
         foreach ($arr2 as $item) {
-            if(in_array($item, $arr1)) {
+            if(!$item || preg_match('/^\s+$/', $item)) {
+                continue;
+            }
+            
+            if(in_array(mb_strtolower($item, 'UTF-8'), $arr1)) {
                 $res++;
             }
         }
