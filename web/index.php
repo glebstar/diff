@@ -55,7 +55,7 @@ if($_POST) {
             </form>
             <?php endif; ?>
         </div>
-        <script src="/js/jquery-1.12.2.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script src="/js/script.js?v=1"></script>
     </body>
 </html>
