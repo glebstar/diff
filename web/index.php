@@ -44,14 +44,14 @@ if($_POST) {
             <?php else: ?>
             <h1>Проверка текста на изменения</h1>
             <?php if($error): ?>
-            <p><span class="error">Ошибка:</span> Введите хотя бы один текст</p>
+            <p><span class="error">Ошибка:</span> <?php echo $error; ?></p>
             <?php endif; ?>
             <form class="texts" method="post" action="/">
                 <label>Введите первый текст:</label>
                 <textarea name="text1"></textarea>
                 <label>Введите второй текст:</label>
                 <textarea name="text2"></textarea>
-                <input type="submit" value="Сравнить" onclick="return sbmClick();" />
+                <input type="submit" value="Сравнить" />
             </form>
             <?php endif; ?>
         </div>
