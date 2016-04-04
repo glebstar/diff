@@ -12,12 +12,16 @@ class Diff {
         // небольшая обработка, чтобы при preg_split не потерять исходные переносы строк и точки
         $t1 = preg_replace('/(\r\n|\n)/', '<br />--br--', $t1);
         $t1 = preg_replace('/(\.\s)/', '$1--dot--', $t1);
+        $t1 = preg_replace('/(!)/', '$1--exc--', $t1);
+        $t1 = preg_replace('/(\?)/', '$1--quest--', $t1);
         
         $t2 = preg_replace('/(\r\n|\n)/', '<br />--br--', $t2);
         $t2 = preg_replace('/(\.\s)/', '$1--dot--', $t2);
+        $t2 = preg_replace('/(!)/', '$1--exc--', $t2);
+        $t2 = preg_replace('/(\?)/', '$1--quest--', $t2);
         
-        $arr1 = preg_split('/--br--|--dot--/', $t1);        
-        $arr2 = preg_split('/--br--|--dot--/', $t2); 
+        $arr1 = preg_split('/--br--|--dot--|--exc--|--quest--/', $t1);        
+        $arr2 = preg_split('/--br--|--dot--|--exc--|--quest--/', $t2); 
         
         if(count($arr1) == 1 && !$arr1[0]) {
             $arr1 = array();
@@ -34,6 +38,8 @@ class Diff {
         $currItemArr1 = 0;
         
         for($i=0; $i<count($arr2); $i++) {
+            $arr2[$i] = trim($arr2[$i]);
+            
             if($currItemArr1 >= $countArr1) {
                 // первый массив закончился, остались только новые предложения
                 $arr3[] = array(
@@ -43,6 +49,8 @@ class Diff {
                 
                 continue;
             }
+            
+            $arr1[$currItemArr1] = trim($arr1[$currItemArr1]);
 
             if($arr2[$i] == $arr1[$currItemArr1]) {
                 $arr3[] = array(
@@ -101,7 +109,7 @@ class Diff {
         for($i=count($arr2); $i<count($arr1); $i++) {
             $arr3[] = array(
                 'mark' => 'del',
-                'value' => $arr1[$i]
+                'value' => trim($arr1[$i])
             );
         }
         
