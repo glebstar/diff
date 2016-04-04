@@ -11,17 +11,13 @@ class Diff {
     public static function getDiff($t1, $t2) {
         // небольшая обработка, чтобы при preg_split не потерять исходные переносы строк и точки
         $t1 = preg_replace('/(\r\n|\n)/', '<br />--br--', $t1);
-        $t1 = preg_replace('/(\.\s)/', '$1--dot--', $t1);
-        $t1 = preg_replace('/(!)/', '$1--exc--', $t1);
-        $t1 = preg_replace('/(\?)/', '$1--quest--', $t1);
+        $t1 = preg_replace('/(\.\s|!+|\?+)/', '$1--dot--', $t1);
         
         $t2 = preg_replace('/(\r\n|\n)/', '<br />--br--', $t2);
-        $t2 = preg_replace('/(\.\s)/', '$1--dot--', $t2);
-        $t2 = preg_replace('/(!)/', '$1--exc--', $t2);
-        $t2 = preg_replace('/(\?)/', '$1--quest--', $t2);
+        $t2 = preg_replace('/(\.\s|!+|\?+)/', '$1--dot--', $t2);
         
-        $arr1 = preg_split('/--br--|--dot--|--exc--|--quest--/', $t1);        
-        $arr2 = preg_split('/--br--|--dot--|--exc--|--quest--/', $t2); 
+        $arr1 = preg_split('/--br--|--dot--/', $t1);        
+        $arr2 = preg_split('/--br--|--dot--/', $t2); 
         
         if(count($arr1) == 1 && !$arr1[0]) {
             $arr1 = array();
