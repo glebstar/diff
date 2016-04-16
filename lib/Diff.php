@@ -10,11 +10,11 @@ class Diff {
      */
     public static function getDiff($t1, $t2) {
         // небольшая обработка, чтобы при preg_split не потерять исходные переносы строк и точки
-        $t1 = preg_replace('/(\r\n|\n)/', '<br />--br--', $t1);
-        $t1 = preg_replace('/(\.\s|!+|\?+)/', '$1--dot--', $t1);
+        $t1 = preg_replace('/(\r\n|\n)/', '&nbsp;<br />--br--', $t1);
+        $t1 = preg_replace('/(\.\s|!+|\?+)/', '$1&nbsp;--dot--', $t1);
         
-        $t2 = preg_replace('/(\r\n|\n)/', '<br />--br--', $t2);
-        $t2 = preg_replace('/(\.\s|!+|\?+)/', '$1--dot--', $t2);
+        $t2 = preg_replace('/(\r\n|\n)/', '&nbsp;<br />--br--', $t2);
+        $t2 = preg_replace('/(\.\s|!+|\?+)/', '$1&nbsp;--dot--', $t2);
         
         $arr1 = preg_split('/--br--|--dot--/', $t1);        
         $arr2 = preg_split('/--br--|--dot--/', $t2); 
@@ -32,6 +32,9 @@ class Diff {
         
         $countArr1 = count($arr1);
         $currItemArr1 = 0;
+        
+        // количество удаленных
+        $delCnt = 0;
         
         for($i=0; $i<count($arr2); $i++) {
             $arr2[$i] = trim($arr2[$i]);
@@ -82,6 +85,7 @@ class Diff {
                             );
                             $currItemArr1++;
                             $i--;
+                            $delCnt++;
                             $isDel = true;
                             break;
                         }
@@ -100,9 +104,9 @@ class Diff {
             }
         }
         
-        // если первый массив длиннее чем второй
+        // если первый массив (минус количество удаленных) длиннее чем второй
         // все непроверенные строки из первого считать удаленными
-        for($i=count($arr2); $i<count($arr1); $i++) {
+        for($i=count($arr2); $i<count($arr1)-$delCnt; $i++) {
             $arr3[] = array(
                 'mark' => 'del',
                 'value' => trim($arr1[$i])
@@ -176,13 +180,13 @@ class Diff {
         foreach ($arr as $item) {
             switch ($item['mark']) {
                 case 'diff':
-                    $res .= '<span class="diff" data-old="' . $item['oldvalue'] . '">' . $item['value'] . '&nbsp;' . '</span>';
+                    $res .= '<span class="diff" data-old="' . $item['oldvalue'] . '">' . $item['value'] . '</span>';
                     break;
                 case 'new':
-                    $res .= '<span class="new">' . '&nbsp;' . $item['value'] . '&nbsp;' . '</span>';
+                    $res .= '<span class="new">' . $item['value'] . '</span>';
                     break;
                 case 'del':
-                    $res .= '<span class="del">' . '&nbsp;' . $item['value'] . '&nbsp;' . '</span>';
+                    $res .= '<span class="del">' . $item['value'] . '</span>';
                     break;
                 default :
                     $res .= $item['value'];
