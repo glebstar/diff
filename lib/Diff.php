@@ -109,7 +109,7 @@ class Diff {
         for($i=count($arr2); $i<count($arr1)-$delCnt; $i++) {
             $arr3[] = array(
                 'mark' => 'del',
-                'value' => trim($arr1[$i])
+                'value' => trim($arr1[$i+$delCnt])
             );
         }
         
@@ -131,8 +131,8 @@ class Diff {
         
         // очистить предложения от знаков препинания
         // и лишних тегов
-        $t1 = preg_replace('/\,|;|:|\.|\<br \/\>/', '', $t1);
-        $t2 = preg_replace('/\,|;|:|\.|\<br \/\>/', '', $t2);
+        $t1 = preg_replace('/\,|;|:|\.|&nbsp;\<br \/\>/', '', $t1);
+        $t2 = preg_replace('/\,|;|:|\.|&nbsp;\<br \/\>/', '', $t2);
         
         if((!$t1 && $t2) || (!$t2 && $t1)) {
             return false;
